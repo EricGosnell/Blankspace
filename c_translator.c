@@ -284,32 +284,30 @@ void print_code_header(FILE *fp) {
       INDENT_STR "} while (0)\n\n",
       STACK_SIZE, HEAP_SIZE, CALL_STACK_SIZE);
   fputs(
-      "inline int  pop(void);\n"
-      "inline void push(int e);\n"
-      "inline void dup_n(size_t n);\n"
-      "inline void slide(size_t n);\n"
-      "inline void swap(void);\n", fp);
+      "inline static int  pop(void);\n"
+      "inline static void push(int e);\n"
+      "inline static void dup_n(size_t n);\n"
+      "inline static void slide(size_t n);\n"
+      "inline static void swap(void);\n", fp);
   fputs(
-      "inline void arith_add(void);\n"
-      "inline void arith_sub(void);\n"
-      "inline void arith_mul(void);\n"
-      "inline void arith_div(void);\n"
-      "inline void arith_mod(void);\n", fp);
+      "inline static void arith_add(void);\n"
+      "inline static void arith_sub(void);\n"
+      "inline static void arith_mul(void);\n"
+      "inline static void arith_div(void);\n"
+      "inline static void arith_mod(void);\n", fp);
   fputs(
-      "inline void heap_store(void);\n"
-      "inline void heap_read(void);\n\n", fp);
+      "inline static void heap_store(void);\n"
+      "inline static void heap_read(void);\n\n", fp);
   fputs(
-      "int stack[STACK_SIZE];\n"
-      "int heap[HEAP_SIZE];\n"
-      "jmp_buf call_stack[CALL_STACK_SIZE];\n"
-      "size_t stack_idx = 0;\n"
-      "size_t call_stack_idx = 0;\n\n\n", fp);
+      "static int stack[STACK_SIZE];\n"
+      "static int heap[HEAP_SIZE];\n"
+      "static jmp_buf call_stack[CALL_STACK_SIZE];\n"
+      "static size_t stack_idx = 0;\n"
+      "static size_t call_stack_idx = 0;\n\n\n", fp);
   fputs(
       "int main(void)\n"
       "{\n", fp);
 }
-
-
 /*!
  * @brief Print the footer of translated C-source code
  * @param [in,out] fp  Output file pointer
@@ -320,60 +318,60 @@ void print_code_footer(FILE *fp) {
       INDENT_STR "return EXIT_SUCCESS;\n"
       "}\n\n\n", fp);
   fputs(
-      "inline int pop(void)\n"
+      "inline static int pop(void)\n"
       "{\n"
       INDENT_STR "assert(stack_idx < LENGTHOF(stack));\n"
       INDENT_STR "return stack[--stack_idx];\n"
       "}\n\n\n", fp);
   fputs(
-      "inline void push(int e)\n"
+      "inline static void push(int e)\n"
       "{\n"
       INDENT_STR "assert(stack_idx < LENGTHOF(stack));\n"
       INDENT_STR "stack[stack_idx++] = e;\n"
       "}\n\n\n", fp);
   fputs(
-      "inline void dup_n(size_t n)\n"
+      "inline static void dup_n(size_t n)\n"
       "{\n"
       INDENT_STR "assert(n < stack_idx && stack_idx < LENGTHOF(stack) - 1);\n"
       INDENT_STR "stack[stack_idx] = stack[stack_idx - (n + 1)];\n"
       INDENT_STR "stack_idx++;\n"
       "}\n\n\n", fp);
   fputs(
-      "inline void slide(size_t n)\n"
+      "inline static void slide(size_t n)\n"
       "{\n"
       INDENT_STR "assert(stack_idx > n);\n"
       INDENT_STR "stack[stack_idx - (n + 1)] = stack[stack_idx - 1];\n"
       INDENT_STR "stack_idx -= n;\n"
       "}\n\n\n", fp);
   fputs(
-      "inline void swap(void)\n"
+      "inline static void swap(void)\n"
       "{\n"
       INDENT_STR "assert(stack_idx > 1);\n"
       INDENT_STR "SWAP(int, &stack[stack_idx - 1], &stack[stack_idx - 2]);\n"
       "}\n\n\n", fp);
   fputs(
-      "inline void arith_add(void)\n"
+      "inline static void arith_add(void)\n"
       "{\n"
       INDENT_STR "assert(stack_idx > 1);\n"
       INDENT_STR "stack_idx--;\n"
       INDENT_STR "stack[stack_idx - 1] += stack[stack_idx];\n"
       "}\n\n\n", fp);
   fputs(
-      "inline void arith_sub(void)\n"
+      "inline static void arith_sub(void)\n"
       "{\n"
       INDENT_STR "assert(stack_idx > 1);\n"
       INDENT_STR "stack_idx--;\n"
       INDENT_STR "stack[stack_idx - 1] -= stack[stack_idx];\n"
       "}\n\n\n", fp);
   fputs(
-      "inline void arith_mul(void)\n"
+      "inline static void arith_mul(void)\n"
       "{\n"
       INDENT_STR "assert(stack_idx > 1);\n"
       INDENT_STR "stack_idx--;\n"
       INDENT_STR "stack[stack_idx - 1] *= stack[stack_idx];\n"
       "}\n\n\n", fp);
   fputs(
-      "inline void arith_div(void)\n"
+      "inline static void arith_div(void)\n"
       "{\n"
       INDENT_STR "assert(stack_idx > 1);\n"
       INDENT_STR "stack_idx--;\n"
@@ -381,7 +379,7 @@ void print_code_footer(FILE *fp) {
       INDENT_STR "stack[stack_idx - 1] /= stack[stack_idx];\n"
       "}\n\n\n", fp);
   fputs(
-      "inline void arith_mod(void)\n"
+      "inline static void arith_mod(void)\n"
       "{\n"
       INDENT_STR "assert(stack_idx > 1);\n"
       INDENT_STR "stack_idx--;\n"
@@ -389,7 +387,7 @@ void print_code_footer(FILE *fp) {
       INDENT_STR "stack[stack_idx - 1] %= stack[stack_idx];\n"
       "}\n\n\n", fp);
   fputs(
-      "inline void heap_store(void)\n"
+      "inline static void heap_store(void)\n"
       "{\n"
       INDENT_STR "int value = pop();\n"
       INDENT_STR "int addr  = pop();\n"
@@ -397,7 +395,7 @@ void print_code_footer(FILE *fp) {
       INDENT_STR "heap[addr] = value;\n"
       "}\n\n\n", fp);
   fputs(
-      "inline void heap_read(void)\n"
+      "inline static void heap_read(void)\n"
       "{\n"
       INDENT_STR "int addr = pop();\n"
       INDENT_STR "assert(0 <= addr && addr < (int) LENGTHOF(heap));\n"
