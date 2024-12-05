@@ -1,6 +1,6 @@
 /*!
- * @file whitespace.c
- * @brief An interpreter and C-translator of Whitespace
+ * @file blankspace.c
+ * @brief An interpreter and C-translator of Blankspace
  * @author koturn
  */
 #include <assert.h>
@@ -282,12 +282,12 @@ main(int argc, char *argv[])
 
 
 /*!
- * @brief Parse comamnd-line arguments and set parameters.
+ * @brief Parse command-line arguments and set parameters.
  *
  * 'argv' is sorted after called getopt_long().
  * @param [out]    param  Parameters of this program
  * @param [in]     argc   A number of command-line arguments
- * @param [in,out] argv   Coomand-line arguments
+ * @param [in,out] argv   Command-line arguments
  */
 static void
 parse_arguments(Param *param, int argc, char *argv[])
@@ -303,12 +303,12 @@ parse_arguments(Param *param, int argc, char *argv[])
   };
   int ret;
   int optidx = 0;
-  while ((ret = getopt_long(argc, argv, "bfhmo:t", opts, &optidx)) != -1) {
+  while ((ret = getopt_long(argc, argv, "bfhmo:tests", opts, &optidx)) != -1) {
     switch (ret) {
       case 'b':  /* -b, --bytecode */
       case 'f':  /* -f, --filter */
       case 'm':  /* -n or --nocompile */
-      case 't':  /* -t or --translate */
+      case 't':  /* -tests or --translate */
         param->mode = ret;
         break;
       case 'h':  /* -h, --help */
@@ -323,7 +323,7 @@ parse_arguments(Param *param, int argc, char *argv[])
     }
   }
   if (optind != argc - 1) {
-    fputs("Please specify one whitespace source code\n", stderr);
+    fputs("Please specify one blankspace source code\n", stderr);
     show_usage(argv[0]);
     exit(EXIT_FAILURE);
   }
@@ -345,14 +345,14 @@ show_usage(const char *progname)
       "  -b, --bytecode\n"
       "    Show code in hexadecimal\n"
       "  -f, --filter\n"
-      "    Visualize whitespace source code\n"
+      "    Visualize blankspace source code\n"
       "  -h, --help\n"
       "    Show help and exit\n"
       "  -m, --mnemonic\n"
       "    Show byte code in mnemonic format\n"
       "  -o FILE, --output=FILE\n"
       "    Specify output filename\n"
-      "  -t, --translate\n"
+      "  -tests, --translate\n"
       "    Translate brainfuck to C source code\n", progname);
 }
 
@@ -360,11 +360,11 @@ show_usage(const char *progname)
 
 
 /* ------------------------------------------------------------------------- *
- * Interpretor                                                               *
+ * Interpreter                                                               *
  * ------------------------------------------------------------------------- */
 /*!
- * @brief Execute whitespace
- * @param [in] bytecode  Bytecode of whitespace
+ * @brief Execute blankspace
+ * @param [in] bytecode  Bytecode of blankspace
  */
 static void
 execute(const unsigned char *bytecode)
@@ -495,7 +495,7 @@ execute(const unsigned char *bytecode)
 
 
 /*!
- * @brief Compile whitespace source code into bytecode
+ * @brief Compile blankspace source code into bytecode
  * @param [out] bytecode  Bytecode buffer
  * @param [in]  code      Brainfuck source code
  */
@@ -534,7 +534,7 @@ compile(unsigned char *bytecode, size_t *bytecode_size, const char *code)
 /*!
  * @brief Generate bytecode about stack manipulation
  * @param [out]    bytecode_ptr  Pointer to bytecode buffer
- * @param [in,out] code_ptr      pointer to whitespace source code
+ * @param [in,out] code_ptr      pointer to blankspace source code
  */
 static void
 gen_stack_code(unsigned char **bytecode_ptr, const char **code_ptr)
@@ -588,7 +588,7 @@ gen_stack_code(unsigned char **bytecode_ptr, const char **code_ptr)
 /*!
  * @brief Generate bytecode about arithmetic
  * @param [out]    bytecode_ptr  Pointer to bytecode buffer
- * @param [in,out] code_ptr      pointer to whitespace source code
+ * @param [in,out] code_ptr      pointer to blankspace source code
  */
 static void
 gen_arith_code(unsigned char **bytecode_ptr, const char **code_ptr)
@@ -634,7 +634,7 @@ gen_arith_code(unsigned char **bytecode_ptr, const char **code_ptr)
 /*!
  * @brief Generate bytecode about heap access
  * @param [out]    bytecode_ptr  Pointer to bytecode buffer
- * @param [in,out] code_ptr      pointer to whitespace source code
+ * @param [in,out] code_ptr      pointer to blankspace source code
  */
 static void
 gen_heap_code(unsigned char **bytecode_ptr, const char **code_ptr)
@@ -660,7 +660,7 @@ gen_heap_code(unsigned char **bytecode_ptr, const char **code_ptr)
 /*!
  * @brief Generate bytecode about flow control
  * @param [out]    bytecode_ptr  Pointer to bytecode buffer
- * @param [in,out] code_ptr      pointer to whitespace source code
+ * @param [in,out] code_ptr      pointer to blankspace source code
  * @param [in]     base          Base address of the bytecode buffer
  */
 static void
@@ -715,7 +715,7 @@ gen_flow_code(unsigned char **bytecode_ptr, const char **code_ptr, unsigned char
 /*!
  * @brief Generate bytecode about I/O
  * @param [out]    bytecode_ptr  Pointer to bytecode buffer
- * @param [in,out] code_ptr      pointer to whitespace source code
+ * @param [in,out] code_ptr      pointer to blankspace source code
  */
 static void
 gen_io_code(unsigned char **bytecode_ptr, const char **code_ptr)
@@ -781,7 +781,7 @@ search_label(const char *label)
 /*!
  * @brief Write where to jump to the bytecode
  * @param [out]    bytecode_ptr  Pointer to bytecode buffer
- * @param [in,out] code_ptr      pointer to whitespace source code
+ * @param [in,out] code_ptr      pointer to blankspace source code
  * @param [in]     base          Base address of the bytecode buffer
  */
 static void
@@ -817,7 +817,7 @@ process_label_define(unsigned char **bytecode_ptr, const char **code_ptr, unsign
  *
  * If label is not defined yet, write it after label is defined.
  * @param [out]    bytecode_ptr  Pointer to bytecode buffer
- * @param [in,out] code_ptr      pointer to whitespace source code
+ * @param [in,out] code_ptr      pointer to blankspace source code
  * @param [in]     base          Base address of the bytecode buffer
  */
 static void
@@ -975,8 +975,8 @@ stack_swap(void)
 
 
 /*!
- * @brief Read whitespace-source code characters and push into given array.
- * @param [in,out] fp      File pointer to the whitespace source code
+ * @brief Read blankspace-source code characters and push into given array.
+ * @param [in,out] fp      File pointer to the blankspace source code
  * @param [out]    code    The array you want to store the source code
  * @param [in]     length  Max size of given array of code
  * @return Status-code
@@ -1006,12 +1006,12 @@ read_file(FILE *fp, char *code, size_t length)
 
 
 /* ------------------------------------------------------------------------- *
- * Whitespace translator                                                     *
+ * Blankspace translator                                                     *
  * ------------------------------------------------------------------------- */
 /*!
- * @brief Translate whitespace source code into C source code
+ * @brief Translate blankspace source code into C source code
  * @param [in,out] fp    output file pointer
- * @param [in]     code  Pointer to Whitespace source code buffer
+ * @param [in]     code  Pointer to Blankspace source code buffer
  * @return Status-code
  */
 static int
@@ -1049,7 +1049,7 @@ translate(FILE *fp, const char *code)
 /*!
  * @brief Print C source code about stack manipulation
  * @param [in,out] fp    output file pointer
- * @param [in]     code  Pointer to Whitespace source code pointer
+ * @param [in]     code  Pointer to Blankspace source code pointer
  */
 static void
 print_stack_code(FILE *fp, const char **code_ptr)
@@ -1093,7 +1093,7 @@ print_stack_code(FILE *fp, const char **code_ptr)
 /*!
  * @brief Print C source code about arithmetic
  * @param [in,out] fp    output file pointer
- * @param [in]     code  Pointer to Whitespace source code pointer
+ * @param [in]     code  Pointer to Blankspace source code pointer
  */
 static void
 print_arith_code(FILE *fp, const char **code_ptr)
@@ -1137,7 +1137,7 @@ print_arith_code(FILE *fp, const char **code_ptr)
 /*!
  * @brief Print C source code about heap access
  * @param [in,out] fp    output file pointer
- * @param [in]     code  Pointer to Whitespace source code pointer
+ * @param [in]     code  Pointer to Blankspace source code pointer
  */
 static void
 print_heap_code(FILE *fp, const char **code_ptr)
@@ -1161,7 +1161,7 @@ print_heap_code(FILE *fp, const char **code_ptr)
 /*!
  * @brief Print C source code about flow control
  * @param [in,out] fp    output file pointer
- * @param [in]     code  Pointer to Whitespace source code pointer
+ * @param [in]     code  Pointer to Blankspace source code pointer
  */
 static void
 print_flow_code(FILE *fp, const char **code_ptr)
@@ -1221,7 +1221,7 @@ print_flow_code(FILE *fp, const char **code_ptr)
 /*!
  * @brief Print C source code about I/O
  * @param [in,out] fp    output file pointer
- * @param [in]     code  Pointer to Whitespace source code pointer
+ * @param [in]     code  Pointer to Blankspace source code pointer
  */
 static void
 print_io_code(FILE *fp, const char **code_ptr)
@@ -1488,8 +1488,8 @@ read_label(const char **code_ptr)
 
 /*!
  * @brief Show byte code in hexadecimal
- * @param [in] bytecode       Whitespace byte code
- * @param [in] bytecode_size  Size of whitespace byte code
+ * @param [in] bytecode       Blankspace byte code
+ * @param [in] bytecode_size  Size of blankspace byte code
  */
 static void
 show_bytecode(const unsigned char *bytecode, size_t bytecode_size)
@@ -1519,8 +1519,8 @@ show_bytecode(const unsigned char *bytecode, size_t bytecode_size)
 /*!
  * @brief Show the byte code in mnemonic format.
  * @param [in] fp             Output file pointer
- * @param [in] bytecode       Whitespace byte code
- * @param [in] bytecode_size  Size of whitespace byte code
+ * @param [in] bytecode       Blankspace byte code
+ * @param [in] bytecode_size  Size of blankspace byte code
  */
 static void
 show_mnemonic(FILE *fp, const unsigned char *bytecode, size_t bytecode_size)
@@ -1623,7 +1623,7 @@ show_mnemonic(FILE *fp, const unsigned char *bytecode, size_t bytecode_size)
 /*!
  * @brief Visualize the source code using S and T instead of space or tab.
  * @param [in,out] fp    Output file pointer
- * @param [in]     code  Whitespace source code
+ * @param [in]     code  Blankspace source code
  */
 static void
 filter(FILE *fp, const char *code)

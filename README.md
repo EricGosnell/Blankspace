@@ -14,12 +14,12 @@ Whitespace interpreter and C-translator.
 $ ./whitespace [Whitespace source file]
 ```
 
-### Tanslate Whitespace to C
+### Translate Whitespace to C
 
 Specify ```-t``` flag and ```-o``` flag.
 
 ```sh
-$ ./whitespace [Whitespace source file] -t -o out.c
+$ ./whitespace [Whitespace source file] -tests -o out.c
 ```
 
 If you don't specify output file with ```-o```, C source code will output

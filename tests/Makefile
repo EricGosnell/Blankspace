@@ -4,8 +4,8 @@ else
     BIN_SUFFIX := .out
 endif
 
-WHITESPACE := $(addsuffix $(BIN_SUFFIX),../whitespace)
-TESTS := $(basename $(sort $(wildcard *.ws)))
+BLANKSPACE := $(addsuffix $(BIN_SUFFIX),../blankspace)
+TESTS := $(basename $(sort $(wildcard *.bs)))
 INPUTS_DIR := inputs
 EXPECTS_DIR := expects
 TRANSPILED_DIR := transpiled
@@ -19,24 +19,24 @@ CFLAGS := -pipe -O2 -Wno-unused-result
 
 define generate-interpreter-test
 $1:
-	@$(ECHO) -n "Interpreter test: $2.ws ... "
+	@$(ECHO) -n "Interpreter test: $2.bs ... "
 	@([ -f $(INPUTS_DIR)/$2.txt ] \
-		&& $(WHITESPACE) $2.ws < $(INPUTS_DIR)/$2.txt || $(WHITESPACE) $2.ws) \
+		&& $(BLANKSPACE) $2.bs < $(INPUTS_DIR)/$2.txt || $(BLANKSPACE) $2.bs) \
 		| $(DIFF) - $(EXPECTS_DIR)/$2.txt > /dev/null
 	@$(ECHO) 'Success'
 endef
 
 define generate-transpiler-test
 $1: $(TRANSPILED_DIR)/$2$(BIN_SUFFIX)
-	@$(ECHO) -n "Transpiler test: $2.ws ... "
+	@$(ECHO) -n "Transpiler test: $2.bs ... "
 	@([ -f $(INPUTS_DIR)/$2.txt ] \
 		&& $$< < $(INPUTS_DIR)/$2.txt || $$<) \
 		| $(DIFF) - $(EXPECTS_DIR)/$2.txt
 	@$(ECHO) 'Success'
 
-$(TRANSPILED_DIR)/$2$(BIN_SUFFIX): $2.ws .FORCE
+$(TRANSPILED_DIR)/$2$(BIN_SUFFIX): $2.bs .FORCE
 	@[ ! -d $$(@D) ] && $(MKDIR) $$(@D) || :
-	@$(WHITESPACE) $$< -t | $(CC) $(CFLAGS) -xc - -o $$@ > /dev/null
+	@$(BLANKSPACE) $$< -t | $(CC) $(CFLAGS) -xc - -o $$@ > /dev/null
 endef
 
 

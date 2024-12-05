@@ -23,7 +23,6 @@ endif
 WARNING_CFLAGS := \
     -Wall \
     -Wextra \
-    -Wabi \
     -Wcast-align \
     -Wcast-qual \
     -Wconversion \
@@ -89,7 +88,7 @@ CPPFLAGS   := $(MACROS)
 LDFLAGS    := -pipe $(OPT_LDFLAGS)
 CTAGSFLAGS := -R --languages=c
 LDLIBS     := $(OPT_LDLIBS)
-TARGET     := whitespace
+TARGET     := blankspace
 OBJS       := $(addsuffix .o, $(basename $(TARGET)))
 SRCS       := $(OBJS:.o=.c)
 DEPENDS    := depends.mk
@@ -114,7 +113,7 @@ $(TARGET): $(OBJS)
 $(foreach SRC,$(SRCS),$(eval $(filter-out \,$(shell $(CC) -MM $(SRC)))))
 
 test: $(TARGET)
-	$(MAKE) -C t/
+	$(MAKE) -C tests/
 
 depends:
 	$(CC) -MM $(SRCS) > $(DEPENDS)
