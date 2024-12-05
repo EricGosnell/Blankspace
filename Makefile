@@ -1,3 +1,8 @@
+# Variables for object files and sources
+OBJS       := blankspace.o interpreter.o stack_manipulation.o c_translator.o
+SRCS       := blankspace.c interpreter.c stack_manipulation.c c_translator.c
+DEPENDS    := depends.mk
+
 ifeq ($(DEBUG),true)
     OPT_CFLAGS  := -O0 -g3 -ftrapv -fstack-protector-all -D_FORTIFY_SOURCE=2
     OPT_LDLIBS  := -lssp
@@ -53,7 +58,6 @@ WARNING_CFLAGS := \
     -Wno-unused-result \
     -pedantic
 
-
 MAX_SOURCE_SIZE   ?= 65536
 MAX_BYTECODE_SIZE ?= 1048576
 MAX_LABEL_LENGTH  ?= 65536
@@ -89,10 +93,6 @@ LDFLAGS    := -pipe $(OPT_LDFLAGS)
 CTAGSFLAGS := -R --languages=c
 LDLIBS     := $(OPT_LDLIBS)
 TARGET     := blankspace
-OBJS       := $(addsuffix .o, $(basename $(TARGET)))
-SRCS       := $(OBJS:.o=.c)
-DEPENDS    := depends.mk
-
 ifeq ($(OS),Windows_NT)
     TARGET := $(addsuffix .exe, $(TARGET))
 else
@@ -101,16 +101,13 @@ endif
 INSTALLED_TARGET := $(if $(PREFIX), $(PREFIX),/usr/local)/bin/$(TARGET)
 
 %.exe:
-	$(CC) $(LDFLAGS) $(filter %.c %.o, $^) $(LDLIBS) -o $@
+	$(CC) $(LDFLAGS) $(OBJS) $(LDLIBS) -o $@
 %.out:
-	$(CC) $(LDFLAGS) $(filter %.c %.o, $^) $(LDLIBS) -o $@
-
+	$(CC) $(LDFLAGS) $(OBJS) $(LDLIBS) -o $@
 
 .PHONY: all test depends syntax ctags install uninstall clean cleanobj
 all: $(TARGET)
 $(TARGET): $(OBJS)
-
-$(foreach SRC,$(SRCS),$(eval $(filter-out \,$(shell $(CC) -MM $(SRC)))))
 
 test: $(TARGET)
 	$(MAKE) -C tests/

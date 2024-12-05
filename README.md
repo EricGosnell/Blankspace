@@ -1,25 +1,25 @@
-Whitespace
+Blankspace
 ==========
 
 [![Build Status](https://travis-ci.org/koturn/Whitespace.png)](https://travis-ci.org/koturn/Whitespace)
 
-Whitespace interpreter and C-translator.
+Blankspace interpreter and C-translator.
 
 
 ## Usage
 
-### Run Whitespace program
+### Run Blankspace program
 
 ```sh
-$ ./whitespace [Whitespace source file]
+$ ./blankspace [Blankspace source file]
 ```
 
-### Translate Whitespace to C
+### Translate Blankspace to C
 
 Specify ```-t``` flag and ```-o``` flag.
 
 ```sh
-$ ./whitespace [Whitespace source file] -tests -o out.c
+$ ./blankspace [Blankspace source file] -tests -o out.c
 ```
 
 If you don't specify output file with ```-o```, C source code will output
@@ -30,7 +30,7 @@ stdout.
 Options                            | Function
 -----------------------------------|------------------------------------
 ```-b```, ```--bytecode```         | Show code in hexadecimal
-```-f```, ```--filter```           | Visualize whitespace source code
+```-f```, ```--filter```           | Visualize blankspace source code
 ```-h```, ```--help```             | Show help and exit
 ```-m```, ```--mnemonic```         | Show byte code in mnemonic format
 ```-o FILE```, ```--output=FILE``` | Specify output filename
