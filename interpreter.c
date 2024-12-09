@@ -66,6 +66,35 @@ void execute(const unsigned char *bytecode) {
         assert(b != 0);
         stack_push(b % a);
         break;
+      case BIT_AND:
+        a = stack_pop();
+        b = stack_pop();
+        stack_push(b & a);
+        break;
+      case BIT_OR:
+        a = stack_pop();
+        b = stack_pop();
+        stack_push(b | a);
+        break;
+      case BIT_XOR:
+        a = stack_pop();
+        b = stack_pop();
+        stack_push(b ^ a);
+        break;
+      case BIT_LS:
+        a = stack_pop();
+        b = stack_pop();
+        stack_push(b << a);
+        break;
+      case BIT_RS:
+        a = stack_pop();
+        b = stack_pop();
+        stack_push(b >> a);
+        break;
+      case BIT_NOT:
+        a = stack_pop();
+        stack_push(~a);
+        break;
       case HEAP_STORE:
         a = stack_pop();
         b = stack_pop();
@@ -256,7 +285,37 @@ void gen_arith_code(unsigned char **bytecode_ptr, const char **code_ptr) {
       }
       break;
     case '\n':
-      fputs("Undefined arithmetic command is detected: [TS][N]\n", stderr);
+      switch (*++code) {
+        case ' ':
+          switch (*++code) {
+            case ' ':
+              *bytecode++ = BIT_AND;
+              break;
+            case '\t':
+              *bytecode++ = BIT_OR;
+              break;
+            case '\n':
+              *bytecode++ = BIT_XOR;
+              break;
+          }
+          break;
+        case '\t':
+          switch (*++code) {
+            case ' ':
+              *bytecode++ = BIT_LS;
+              break;
+            case '\t':
+              *bytecode++ = BIT_RS;
+              break;
+            case '\n':
+              *bytecode++ = BIT_NOT;
+              break;
+          }
+          break;
+        case '\n':
+          fputs("Undefined arithmetic command is detected: [TS][NN]\n", stderr);
+          break;
+      }
       break;
   }
   *bytecode_ptr = bytecode;
