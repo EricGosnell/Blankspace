@@ -1,10 +1,8 @@
-/*!
- * @file blankspace.c
- * @brief An interpreter and C-translator of Blankspace
- * @author koturn
- */
-
 #include "blankspace.h"
+#include <getopt.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 WsInt stack[STACK_SIZE] = {0};
 size_t stack_idx = 0;
@@ -12,11 +10,10 @@ size_t stack_idx = 0;
 LabelInfo *label_info_list[MAX_N_LABEL] = {NULL};
 size_t n_label_info = 0;
 
-
 /*!
  * @brief Entry point of this program
  * @param [in] argc  The number of argument (include this program name)
- * @param [in] argv  The array off argument strings
+ * @param [in] argv  The array of argument strings
  * @return  Status-code
  */
 int main(int argc, char *argv[]) {
@@ -77,6 +74,18 @@ int main(int argc, char *argv[]) {
         fclose(ofp);
       }
       break;
+    case 's':  // New 'blankspace' mode
+      if (param.out_filename == NULL) {
+        reverse_filter(stdout, param.in_filename);  // Output to stdout
+      } else {
+        if ((ofp = fopen(param.out_filename, "w")) == NULL) {
+          fprintf(stderr, "Unable to open file: %s\n", param.out_filename);
+          return EXIT_FAILURE;
+        }
+        reverse_filter(ofp, param.in_filename);  // Output to specified file
+        fclose(ofp);
+      }
+      break;
     default:
       compile(bytecode, &bytecode_size, code);
       execute(bytecode);
@@ -84,7 +93,6 @@ int main(int argc, char *argv[]) {
   }
   return EXIT_SUCCESS;
 }
-
 
 /*!
  * @brief Parse command-line arguments and set parameters.
@@ -102,22 +110,24 @@ void parse_arguments(Param *param, int argc, char *argv[]) {
     {"mnemonic",  no_argument,       NULL, 'm'},
     {"output",    required_argument, NULL, 'o'},
     {"translate", no_argument,       NULL, 't'},
+    {"blankspace", no_argument,      NULL, 's'},  // New option for blankspace mode
     {0, 0, 0, 0}  /* must be filled with zero */
   };
   int ret;
   int optidx = 0;
-  while ((ret = getopt_long(argc, argv, "bfhmo:tests", opts, &optidx)) != -1) {
+  while ((ret = getopt_long(argc, argv, "bfhmo:s", opts, &optidx)) != -1) {
     switch (ret) {
       case 'b':  /* -b, --bytecode */
       case 'f':  /* -f, --filter */
-      case 'm':  /* -n or --nocompile */
-      case 't':  /* -tests or --translate */
+      case 'm':  /* -m, --mnemonic */
+      case 't':  /* -t, --translate */
+      case 's':  /* -s, --blankspace */
         param->mode = ret;
         break;
       case 'h':  /* -h, --help */
         show_usage(argv[0]);
         exit(EXIT_SUCCESS);
-      case 'o':  /* -o or --output */
+      case 'o':  /* -o, --output */
         param->out_filename = optarg;
         break;
       case '?':  /* unknown option */
@@ -132,7 +142,6 @@ void parse_arguments(Param *param, int argc, char *argv[]) {
   }
   param->in_filename = argv[optind];
 }
-
 
 /*!
  * @brief Show usage of this program and exit
@@ -153,6 +162,8 @@ void show_usage(const char *progname) {
       "    Show byte code in mnemonic format\n"
       "  -o FILE, --output=FILE\n"
       "    Specify output filename\n"
-      "  -tests, --translate\n"
-      "    Translate brainfuck to C source code\n", progname);
+      "  -t, --translate\n"
+      "    Translate brainfuck to C source code\n"
+      "  -s, --blankspace\n"
+      "    Convert input file to blankspace (S and T for space and tab)\n", progname);
 }

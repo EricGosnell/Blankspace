@@ -193,6 +193,9 @@ show_mnemonic(FILE *fp, const unsigned char *bytecode, size_t bytecode_size);
  void
 filter(FILE *fp, const char *code);
 
+void 
+reverse_filter(FILE *fp, const char *filename);
+
 extern WsInt stack[STACK_SIZE];
 extern size_t stack_idx;
 

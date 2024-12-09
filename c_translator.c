@@ -116,6 +116,37 @@ void print_arith_code(FILE *fp, const char **code_ptr) {
       }
       break;
     case '\n':
+      switch (*++code) {
+        case ' ':
+          switch (*++code) {
+            case ' ':
+              fputs(INDENT_STR "arith_and();\n", fp);
+              break;
+            case '\t':
+              fputs(INDENT_STR "arith_or();\n", fp);
+              break;
+            case '\n':
+              fputs(INDENT_STR "arith_xor();\n", fp);
+              break;
+          }
+          break;
+        case '\t':
+          switch (*++code) {
+            case ' ':
+              fputs(INDENT_STR "arith_ls();\n", fp);
+              break;
+            case '\t':
+              fputs(INDENT_STR "arith_rs();\n", fp);
+              break;
+            case '\n':
+              fputs(INDENT_STR "arith_not();\n", fp);
+              break;
+          }
+          break;
+        case '\n':
+          fputs("Undefined arithmetic command is detected: [TS][NN]\n", stderr);
+          break;
+      }
       fputs("Undefined arithmetic command is detected: [TS][N]\n", stderr);
       break;
   }
@@ -538,6 +569,24 @@ void show_mnemonic(FILE *fp, const unsigned char *bytecode, size_t bytecode_size
       case ARITH_MOD:
         fputs("ARITH_MOD\n", fp);
         break;
+      case BIT_AND:
+        fputs("BIT_AND\n", fp);
+        break;
+      case BIT_OR:
+        fputs("BIT_OR\n", fp);
+        break;
+      case BIT_XOR:
+        fputs("BIT_XOR\n", fp);
+        break;
+      case BIT_LS:
+        fputs("BIT_LS\n", fp);
+        break;
+      case BIT_RS:
+        fputs("BIT_RS\n", fp);
+        break;
+      case BIT_NOT:
+        fputs("BIT_NOT\n", fp);
+        break;
       case HEAP_STORE:
         fputs("HEAP_STORE\n", fp);
         break;
@@ -608,4 +657,35 @@ void filter(FILE *fp, const char *code) {
         break;
     }
   }
+}
+
+void reverse_filter(FILE *fp, const char *filename) {
+    FILE *file = fopen(filename, "r");
+    if (file == NULL) {
+        perror("Unable to open file");
+        return;
+    }
+
+    char ch;
+    while ((ch = fgetc(file)) != EOF) {
+        switch (ch) {
+            case 'S':
+                fputc(' ', fp);
+                // fprintf(stderr, "S");
+                break;
+            case 'T':
+                fputc('\t', fp);
+                // fprintf(stderr, "T");
+                break;
+            case '\n':
+                fputc('\n', fp);
+                // fprintf(stderr, "N");
+                break;
+            default:
+                fprintf(stderr, "Unrecognized character: %c\n", ch);
+                break;
+        }
+    }
+
+    fclose(file);
 }
