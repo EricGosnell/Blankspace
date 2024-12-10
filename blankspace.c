@@ -164,6 +164,6 @@ void show_usage(const char *progname) {
       "    Specify output filename\n"
       "  -t, --translate\n"
       "    Translate brainfuck to C source code\n"
-      "  -s, --blankspace\n"
+      "  -s, --convert\n"
       "    Convert input file to blankspace (S and T for space and tab)\n", progname);
 }

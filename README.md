@@ -25,6 +25,18 @@ $ ./blankspace [Blankspace source file] -tests -o out.c
 If you don't specify output file with ```-o```, C source code will output
 stdout.
 
+### Write and execute Blankspace
+```sh
+./blankspace.out tests/rs.txt -s -o output.txt
+```
+Specify input file with first command. Input file should be written with newlines, S to represent spaces, and T to represent tabs. This command will create output.txt which will be written in Blankspace.s 
+
+```sh
+./blankspace.out output.txt
+```
+This will execute the Blankspace program.
+
+
 ### Options
 
 Options                            | Function
@@ -35,6 +47,7 @@ Options                            | Function
 ```-m```, ```--mnemonic```         | Show byte code in mnemonic format
 ```-o FILE```, ```--output=FILE``` | Specify output filename
 ```-t```, ```--translate```        | Translate brainfuck to C source code
+```-s```,```--convert```           | Convert input file to blankspace (S and T for space and tab)
 
 
 ## Build
